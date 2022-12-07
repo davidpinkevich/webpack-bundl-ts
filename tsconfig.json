@@ -1,10 +1,11 @@
 {
-  "compilerOptions": {
+  "compilerOptions": { // все настройки, связанные с компилятором
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "module": "es6",
     "target": "es5",
+    "strict": true,
     "allowJs": true
   },
-  "files": ["src/index.ts"]
+  "files": ["src/ts/index.ts"] //Указать список конкретных файлов для компиляции, можно перечислять в массиве через запятую ["core.ts","app.ts"]
 }

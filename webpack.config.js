@@ -9,10 +9,17 @@ const isProduction = process.env.NODE_ENV == 'production';
 
 const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader';
 
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
+
+
 
 
 const config = {
-    entry: './src/index.ts',
+  entry: {
+    index: './src/ts/index.ts', // какие js файлы будут в итоговом бандле, можно перечислить нужное кол-во
+    second: './src/ts/second.ts',
+  },
     output: {
         path: path.resolve(__dirname, 'dist'),
     },
@@ -21,10 +28,26 @@ const config = {
         host: 'localhost',
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: 'index.html',
-        }),
-
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: './src/html/index.html',
+        chunks: ['index'], // какие скрипты подключать к странице
+        inject: 'body', // вставить скрипт в конец тега body
+        // minify: false,  отменить минификацию
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'second.html',
+        template: './src/html/second.html',
+        chunks: ['second'], // какие скрипты подключать к странице
+        inject: 'body', // вставить скрипт в конец тега body
+        // minify: false,  отменить минификацию
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: "./src/assets", to: "assets" },
+        ],
+      }),
+      new CleanWebpackPlugin(),
         // Add your plugins here
         // Learn more about plugins from https://webpack.js.org/configuration/plugins/
     ],
@@ -45,8 +68,12 @@ const config = {
             },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-                type: 'asset',
+                type: 'asset/resource',
             },
+            {
+              test: /\.(mp3|ogg)$/,
+              type: "asset",
+            }
 
             // Add your rules for custom modules here
             // Learn more about loaders from https://webpack.js.org/loaders/
